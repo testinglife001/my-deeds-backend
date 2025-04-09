@@ -25,10 +25,10 @@ const app = express();
  });
 
 const corsConfig = {
-    // origin: process.env.Client_URL,
-    origin: process.env.MODE === 'production' ?
-            [process.env.client_vendor_production_url] :
-            [process.env.client_vendor_local_url],
+     origin: process.env.vendor_production_url,
+    // origin: process.env.MODE === 'production' ?
+    //        [process.env.client_vendor_production_url] :
+    //        [process.env.client_vendor_local_url],
     credentials: true,
     method: ["GET", "POST", "PUT", "DELETE"],
 };
