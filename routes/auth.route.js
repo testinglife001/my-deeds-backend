@@ -22,6 +22,6 @@ router.post("/reset-password/:token", resetPassword);
 
 router.post('/admin-login', admin_login);
 
-router.post('/admin_login', adminLogin);
+router.post('/admin/login', adminLogin);
 
 export default router;
