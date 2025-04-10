@@ -1,5 +1,5 @@
 import express from "express";
-import { admin_login, checkAuth, createUser, forgotPassword, resetPassword, signin, signout, signup, verifyEmail } from "../controllers/auth.controller.js";
+import { admin_login, adminLogin, checkAuth, createUser, forgotPassword, resetPassword, signin, signout, signup, verifyEmail } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { cloudinaryFileUploader } from "../middleware/FileUploader.js";
 
@@ -21,5 +21,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 
 router.post('/admin-login', admin_login);
+
+router.post('/admin_login', adminLogin);
 
 export default router;

@@ -1,4 +1,4 @@
-	import bcryptjs from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import validator from "validator";
@@ -391,5 +391,60 @@ export const admin_login = async (req, res) => {
 	}
 	
 
+}
+
+
+export const adminLogin = async (req, res) => {
+	const {email,password} = req.body;
+	try {
+		const user = await Admin.findOne({ email });
+
+		if(!user){
+			  return res.status(400).json({message:"User not found"})
+		  }
+		  
+		// const isCorrect = bcrypt.compareSync(req.body.password, user.password);
+		// if (!isCorrect) return next(createError(400, "Wrong password or username!"));
+		const matchPassword = await bcrypt.compareSync(password,user.password)
+		  if(!matchPassword){
+			  return res.status(400).json({message:"Invalid Password"})
+		  }
+  
+		// const token = jwt.sign(
+		//    {
+		//      id: user._id,
+		//      isSeller: user.isSeller,
+		//    },
+		//    process.env.JWT_KEY
+		// );
+		// const token = generateToken(user._id)
+		 const token = jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn:"1d"})
+		// const token = jwt.sign({Id},process.env.JWT_SECRET,{expiresIn:"1d"})
+  
+  
+		// const { password, ...info } = user._doc;
+		const {password:pass,...rest} = user._doc;
+  
+		// res.cookie("accessToken", token, {
+		//        httpOnly: true,
+		//    }).status(200).send(info);
+		return res.cookie("token",token,{
+		  path:'/',
+		  expires:new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+		  httpOnly:true,
+		  secure:true,
+		  sameSite:'none'
+		  }).status(200).json({
+			token,
+			rest,
+			message:"User logged in successfully"
+		})
+  
+	} catch (error) {
+		// res.status(500).send("Something went wrong.");
+		// next(error);
+		return res.status(400).json({message:"Internal Server Error (login)",error:error})
+	}
+  
 }
 
