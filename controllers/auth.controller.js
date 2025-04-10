@@ -394,50 +394,20 @@ export const admin_login = async (req, res) => {
 }
 
 
+
 export const adminLogin = async (req, res) => {
-	// const {email,password} = req.body;
 	try {
-		const user = await Admin.findOne({ email: req.body.email });
-
-		if(!user){
-			  return res.status(400).json({message:"Admin not found"})
-		  }
-		  
-
-		const matchPassword = await bcrypt.compareSync(req.body.password,user.password)
-		  if(!matchPassword){
-			  return res.status(400).json({message:"Invalid Password"})
-		  }
+	  const { email, password } = req.body;
+	  const user = await Admin.findOne({ email });
+	  if (!user) return res.status(400).json({ msg: 'User not found' });
   
-		
-		 const token = jwt.sign(
-			{userId:user._id},
-			process.env.JWT_SECRET,
-			{expiresIn:"1d"}
-		)
-		
+	  const isMatch = await bcrypt.compare(password, user.password);
+	  if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
   
-  
-
-		const {password:pass,...rest} = user._doc;
-  
-		
-		return res.cookie("token",token,{
-		  path:'/',
-		  expires:new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-		  httpOnly:true,
-		  secure:true,
-		  sameSite:'none'
-		  }).status(200).json({
-			token,
-			rest,
-			message:"Admin logged in successfully"
-		})
-  
-	} catch (error) {
-
-		return res.status(400).json({message:"Internal Server Error (login)",error:error})
+	  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+	  res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+	} catch (err) {
+	  res.status(500).json({ msg: err.message });
 	}
-  
-}
+  };
 
