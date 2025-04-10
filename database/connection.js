@@ -9,7 +9,7 @@ export const connectDB = async()=>{
             "mongodb+srv://testinglife001:MkDV77J0x1fniWB4@mysimpleapp.ndaxdri.mongodb.net/?retryWrites=true&w=majority&appName=mysimpleapp",
             {
             useNewUrlParser:true,
-            useCreateIndex: true
+            // useCreateIndex: true
             }
         )
         console.log(`MongoDB Connected: ${conn.connection.host}`);
