@@ -395,16 +395,16 @@ export const admin_login = async (req, res) => {
 
 
 export const adminLogin = async (req, res) => {
-	const {email,password} = req.body;
+	// const {email,password} = req.body;
 	try {
-		const user = await Admin.findOne({ email });
+		const user = await Admin.findOne({ email: req.body.email });
 
 		if(!user){
 			  return res.status(400).json({message:"Admin not found"})
 		  }
 		  
 
-		const matchPassword = await bcrypt.compareSync(password,user.password)
+		const matchPassword = await bcrypt.compareSync(req.body.password,user.password)
 		  if(!matchPassword){
 			  return res.status(400).json({message:"Invalid Password"})
 		  }
